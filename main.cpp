@@ -1,7 +1,14 @@
 #include "stdio.h"
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <memory>
 
 #define N  100         // maximum number of digits supported
 #define NN (2*N + 1)   // number of digits allocated
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+using namespace std;
 
 class XP {
 private:
@@ -29,7 +36,7 @@ public:
     }
 
     void add(XP b) {
-        int minLen = len > b.len ? b.len : len;
+        int minLen = MIN(len, b.len);
         char carry = 0;
         int i = 0;
         for (; i<minLen; i++) {
@@ -66,22 +73,26 @@ public:
             printf("%c", digits[i] + '0');
         }
     }
+
+    static unique_ptr<XP> rand(int len) {
+        char str[NN];
+        int i=0;
+        for(; i<MIN(len, NN); i++) {
+            str[i] = '0' + std::rand() % 10;
+        }
+        str[i] = '\0';
+        return unique_ptr<XP>( new XP(str) );
+    }
 };
 
 void testIsOdd() {
-    {
-        XP x("111");
-        x.print();
-        printf("%s\n", x.isOdd() ? "Odd" : "Even" );
-    }
-    {
-        XP x("222");
-        x.print();
-        printf("%s\n", x.isOdd() ? "Odd" : "Even" );
-    }
+    unique_ptr<XP> x = XP::rand(20);
+    x->print();
+    printf(" is %s \n", x->isOdd() ? "Odd" : "Even" );
 }
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
 
     for(int i=3; i<=argc; i+=2) {
         XP a(argv[i-1]);
@@ -98,6 +109,11 @@ int main(int argc, char** argv) {
 
     if(argc == 1) {
         testIsOdd();
+
+        printf("RANDOM NUMBER:\n");
+        unique_ptr<XP> x = XP::rand(10); // unique_ptr<XP>( new XP("1234567890") );
+        x->print();
+        printf("\n");
     }
 
     return 0;
