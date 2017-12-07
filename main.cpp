@@ -68,6 +68,45 @@ public:
         }
     }
 
+    // bool operator< (const XP& r) {
+    //     printf("%d %d \n",  len, r.len);
+    //     if (len < r.len) {
+    //         return true;
+    //     } else if (len > r.len) {
+    //         return false;
+    //     } else {
+    //         return digits[len - 1] < r.digits[len - 1];
+    //     }
+    // }
+
+    bool less(const XP& r) {
+        if (len < r.len) {
+            return true;
+        } else if (len > r.len) {
+            return false;
+        } else {
+            return digits[len - 1] < r.digits[len - 1];
+        }
+    }
+
+    bool gr(const XP& r) {
+        if (len > r.len) {
+            return true;
+        } else if (len < r.len) {
+            return false;
+        } else {
+            return digits[len - 1] > r.digits[len - 1];
+        }
+    }
+
+    bool eq(const XP& r) {
+        return !less(r) && !gr(r);
+    }
+
+    void sub(XP b) {
+
+    }
+
     void print() {
         for (int i = len-1; i>=0; i--) {
             printf("%c", digits[i] + '0');
@@ -75,8 +114,13 @@ public:
     }
 
     static unique_ptr<XP> rand(int len) {
+        if (len < 1) {
+            throw std::invalid_argument( "length can not be < 1" );
+        }
+
         char str[NN];
-        int i=0;
+        int i = 0;
+        str[i++] = '0' + 1 + (std::rand() % 9);
         for(; i<MIN(len, NN); i++) {
             str[i] = '0' + std::rand() % 10;
         }
@@ -89,6 +133,55 @@ void testIsOdd() {
     unique_ptr<XP> x = XP::rand(20);
     x->print();
     printf(" is %s \n", x->isOdd() ? "Odd" : "Even" );
+}
+
+void testRand() {
+    printf("RANDOM NUMBER:\n");
+    unique_ptr<XP> x = XP::rand(10); // unique_ptr<XP>( new XP("1234567890") );
+    x->print();
+    printf("\n");
+}
+
+void testLess(int len1, int len2) {
+    printf("Test <:\n");
+    unique_ptr<XP> x = XP::rand(len1);
+    unique_ptr<XP> y = XP::rand(len2);
+
+    if (x->less(*y.get())) {
+        printf("case 1: ");
+        x->print();
+        printf(" < ");
+        y->print();
+    } else if (y->less(*x.get())) {
+        printf("case 2: ");
+        y->print();
+        printf(" < ");
+        x->print();
+    } else {
+        printf("case 3: ");
+        y->print();
+        printf(" = ");
+        x->print();
+    }
+    printf("\n");
+}
+
+
+void testEq(int len1, int len2) {
+    printf("Test ==:\n");
+    unique_ptr<XP> x = XP::rand(len1);
+    unique_ptr<XP> y = XP::rand(len2);
+
+    if (x->eq(*y.get())) {
+        x->print();
+        printf(" == ");
+        y->print();
+    } else {
+        x->print();
+        printf(" != ");
+        y->print();
+    }
+    printf("\n");
 }
 
 int main(int argc, char** argv) {
@@ -109,11 +202,14 @@ int main(int argc, char** argv) {
 
     if(argc == 1) {
         testIsOdd();
+        testRand();
+        testLess(1, 1);
+        testLess(4, 3);
+        testLess(1, 4);
 
-        printf("RANDOM NUMBER:\n");
-        unique_ptr<XP> x = XP::rand(10); // unique_ptr<XP>( new XP("1234567890") );
-        x->print();
-        printf("\n");
+        testEq(1, 1);
+        testEq(2, 2);
+        testEq(2, 3);
     }
 
     return 0;
