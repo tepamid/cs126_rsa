@@ -20,6 +20,14 @@ public:
         }
     }
 
+    int isOdd() {
+        return len > 0 ? digits[0] % 2 == 1 : 0;
+    }
+
+    int isEven() {
+        return len > 0 ? digits[0] % 2 == 0 : 1;
+    }
+
     void add(XP b) {
         int minLen = len > b.len ? b.len : len;
         char carry = 0;
@@ -60,49 +68,18 @@ public:
     }
 };
 
-// void test1() {
-//     XP a("123456789");
-//     XP b("54545454");
-
-//     a.add(b);
-//     printf("OR: ");
-//     a.print();
-//     printf("\n");
-//     printf("ER: 178002243\n");
-// }
-
-// void test2() {
-//     XP a("54545454");
-//     XP b("123456789");
-
-//     a.add(b);
-//     printf("OR: ");
-//     a.print();
-//     printf("\n");
-//     printf("ER: 178002243\n");
-// }
-
-// void test3() {
-//     XP a("5");
-//     XP b("5");
-
-//     a.add(b);
-//     printf("OR: ");
-//     a.print();
-//     printf("\n");
-//     printf("ER: 10\n");
-// }
-
-// void test4() {
-//     XP a("123456789123456789123456789123456789123456789123456789");
-//     XP b("123456789123456789123456789123456789123456789123456789");
-
-//     a.add(b);
-//     printf("OR: ");
-//     a.print();
-//     printf("\n");
-//     printf("ER: ?\n");
-// }
+void testIsOdd() {
+    {
+        XP x("111");
+        x.print();
+        printf("%s\n", x.isOdd() ? "Odd" : "Even" );
+    }
+    {
+        XP x("222");
+        x.print();
+        printf("%s\n", x.isOdd() ? "Odd" : "Even" );
+    }
+}
 
 int main(int argc, char** argv) {
 
@@ -115,6 +92,12 @@ int main(int argc, char** argv) {
         printf("= ");
         a.print();
         printf("\n");
+
+
+    }
+
+    if(argc == 1) {
+        testIsOdd();
     }
 
     return 0;
